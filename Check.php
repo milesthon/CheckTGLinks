@@ -24,6 +24,10 @@ $choice = trim($line);
 foreach($links as $url) {
     curl_setopt($ch, CURLOPT_URL, $url);
     $html = curl_exec($ch);
+    if(curl_errno($ch)) {
+        echo 'ERROR - ' . $url . PHP_EOL;
+        continue;
+    }
     @$dom->loadHTML($html);
     $spans = $dom->getElementsByTagName('span');
     $spanValue = null;
@@ -32,7 +36,7 @@ foreach($links as $url) {
             $spanValue = $span->nodeValue;
         }
     }
-    if(strpos($html, '</strong>, you can view and join <br>') !== false) {
+    if(strpos($html, '<div class="tgme_page_additional">') !== false) {
         if ($choice == '1') {
             file_put_contents('ONLINE.txt', $url . PHP_EOL, FILE_APPEND);
             echo 'LIVE - ' . $url . PHP_EOL;
