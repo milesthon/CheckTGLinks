@@ -24,8 +24,11 @@ $choice = trim($line);
 foreach($links as $url) {
     curl_setopt($ch, CURLOPT_URL, $url);
     $html = curl_exec($ch);
+    $date_time = date('Y-m-d H:i:s');
     if(curl_errno($ch)) {
-        echo 'ERROR - ' . $url . PHP_EOL;
+        $error_message = 'ERROR - ' . $url . PHP_EOL;
+        echo $date_time . ' ' . $error_message;
+        file_put_contents('error.txt', $date_time . ' ' . $error_message, FILE_APPEND);
         continue;
     }
     @$dom->loadHTML($html);
@@ -45,7 +48,9 @@ foreach($links as $url) {
             echo 'LIVE - ' . $spanValue . ' - '. $url . PHP_EOL;
         }
     } else {
-        echo 'DEAD - ' . $url . PHP_EOL;
+        $dead_message = 'DEAD - ' . $url . PHP_EOL;
+        echo $date_time . ' ' . $dead_message;
+        file_put_contents('error.txt', $date_time . ' ' . $dead_message, FILE_APPEND);
     }
 }
 
